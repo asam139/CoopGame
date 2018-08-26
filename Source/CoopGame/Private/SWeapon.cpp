@@ -3,6 +3,7 @@
 #include "SWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASWeapon::ASWeapon()
@@ -31,6 +32,8 @@ void ASWeapon::Fire()
         FRotator EyeRotation;
         MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
         
+        FVector ShotDirection = EyeRotation.Vector();
+        
         FVector TraceEnd = EyeLocation + (EyeRotation.Vector() * 10000);
         
         FCollisionQueryParams QueryParams;
@@ -43,6 +46,9 @@ void ASWeapon::Fire()
         {
             // Blocking hit! Process damage
             
+            AActor* HitActor = Hit.GetActor();
+            
+            UGameplayStatics::ApplyPointDamage(HitActor, 20.0f, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
         }
         
         DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
