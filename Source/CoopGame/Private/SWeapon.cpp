@@ -8,6 +8,13 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
+static int32 DebugWeaponsDrawing = 0;
+FAutoConsoleVariableRef CVARDebugWeaponDrawing (
+                        TEXT("COOP.DebugWeapons"),
+                        DebugWeaponsDrawing,
+                        TEXT("Draw Debug Lines for Weapons"),
+                        ECVF_Cheat);
+
 // Sets default values
 ASWeapon::ASWeapon()
 {
@@ -68,7 +75,10 @@ void ASWeapon::Fire()
             
         }
         
-        DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
+        if (DebugWeaponsDrawing > 0)
+        {
+            DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
+        }
         
         if (MuzzleEffect)
         {
