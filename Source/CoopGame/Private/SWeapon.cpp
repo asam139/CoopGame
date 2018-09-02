@@ -25,6 +25,8 @@ ASWeapon::ASWeapon()
     
     MuzzleSocketName = "MuzzleSocket";
     TracerBeamEndName = "BeamEnd";
+    
+    BaseDamage = 20.0f;
 }
 
 void ASWeapon::Fire()
@@ -53,14 +55,20 @@ void ASWeapon::Fire()
         FHitResult Hit;
         if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, COLLISION_WEAPON, QueryParams))
         {
-            // Blocking hit! Process damage
-            
-            AActor* HitActor = Hit.GetActor();
-            
-            UGameplayStatics::ApplyPointDamage(HitActor, 20.0f, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
-            
-            
+            // Get surface type
             EPhysicalSurface SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+            
+            // Apply damage
+            float CurrentDamage = BaseDamage;
+            if (SurfaceType == SURFACE_FLESH_VULNERABLE)
+            {
+                CurrentDamage *= 2.0f;
+            }
+            AActor* HitActor = Hit.GetActor();
+            UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
+            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Damage: %f"), CurrentDamage));
+            
+            // Show effects
             UParticleSystem* SelectedEffect = nullptr;
             switch (SurfaceType)
             {
@@ -78,8 +86,8 @@ void ASWeapon::Fire()
                 UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectedEffect, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
             }
             
+            // Save impact point as end point
             TracerEndPoint = Hit.ImpactPoint;
-            
         }
         
         if (DebugWeaponsDrawing > 0)
