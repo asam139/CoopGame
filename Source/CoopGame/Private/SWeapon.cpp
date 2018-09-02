@@ -9,6 +9,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "CoopGame.h"
+#include "TimerManager.h"
 
 static int32 DebugWeaponsDrawing = 0;
 FAutoConsoleVariableRef CVARDebugWeaponDrawing (
@@ -27,6 +28,16 @@ ASWeapon::ASWeapon()
     TracerBeamEndName = "BeamEnd";
     
     BaseDamage = 20.0f;
+    
+    RateOfFire = 600;
+
+}
+
+void ASWeapon::BeginPlay()
+{
+    Super::BeginPlay();
+    
+    TimeBetweenShots =  60.0f / RateOfFire;
 }
 
 void ASWeapon::Fire()
@@ -66,7 +77,6 @@ void ASWeapon::Fire()
             }
             AActor* HitActor = Hit.GetActor();
             UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Damage: %f"), CurrentDamage));
             
             // Show effects
             UParticleSystem* SelectedEffect = nullptr;
@@ -96,6 +106,8 @@ void ASWeapon::Fire()
         }
         
         PlayFireEffects(TracerEndPoint);
+        
+        LastFireTime = GetWorld()->TimeSeconds;
     }
     
     
@@ -129,4 +141,14 @@ void ASWeapon::PlayFireEffects(FVector TraceEnd)
     }
 }
 
+void ASWeapon::StartFire()
+{
+    float FirstDelay = FMath::Max(LastFireTime + TimeBetweenShots - GetWorld()->TimeSeconds, 0.0f);
+    
+    GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, TimeBetweenShots, true, FirstDelay);
+}
 
+void ASWeapon::StopFire()
+{
+    GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
+}
