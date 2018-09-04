@@ -37,7 +37,7 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USpringArmComponent* SpringArmComp;
 
-    PROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USHealthComponent* HealthComp;
     
     bool bWantsToZoom;
