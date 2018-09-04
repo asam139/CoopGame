@@ -31,6 +31,8 @@ ASWeapon::ASWeapon()
     
     RateOfFire = 600;
 
+    SetReplicates(true);
+
 }
 
 void ASWeapon::BeginPlay()
