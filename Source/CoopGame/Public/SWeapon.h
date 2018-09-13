@@ -88,7 +88,7 @@ protected:
     // Dervied from RateOfFire
     float TimeBetweenShots;
 
-    UPROPERTY(ReplicatedUsing = OnRep_HitScanTrace)
+    UPROPERTY(ReplicatedUsing=OnRep_HitScanTrace)
     FHitScanTrace HitScanTrace;
 
     UFUNCTION()

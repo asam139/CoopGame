@@ -172,6 +172,8 @@ void ASWeapon::PlayImpactEffects(EPhysicalSurface SurfaceType, FVector ImpactPoi
 
 void ASWeapon::OnRep_HitScanTrace()
 {
+    UE_LOG(LogTemp, Log, TEXT("This function ran on: %s"), NETMODE_WORLD); 
+
     // Play cosmetic FX
     PlayFireEffects(HitScanTrace.TraceTo);
 
