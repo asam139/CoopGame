@@ -10,6 +10,7 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "CoopGame.h"
 #include "TimerManager.h"
+#include "Net/UnrealNetwork.h"
 
 static int32 DebugWeaponsDrawing = 0;
 FAutoConsoleVariableRef CVARDebugWeaponDrawing (
@@ -114,7 +115,11 @@ void ASWeapon::Fire()
             DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
         }
         
-        PlayFireEffects(TracerEndPoint);
+        
+        if (Role == ROLE_Authority)
+        {
+            HitScanTrace.TraceTo = TracerEndPoint; 
+        }
         
         LastFireTime = GetWorld()->TimeSeconds;
     }
@@ -150,6 +155,12 @@ void ASWeapon::PlayFireEffects(FVector TraceEnd)
     }
 }
 
+void ASWeapon::OnRep_HitScanTrace()
+{
+    // Play cosmetic FX
+    PlayFireEffects(HitScanTrace.TraceTo);
+}
+
 void ASWeapon::ServerFire_Implementation()
 {
     Fire();
@@ -171,3 +182,15 @@ void ASWeapon::StopFire()
 {
     GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
 }
+
+
+void ASWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME_CONDITION(ASWeapon, HitScanTrace, COND_SkipOwner);
+}
+
+
+
+
