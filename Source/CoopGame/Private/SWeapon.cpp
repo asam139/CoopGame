@@ -102,6 +102,7 @@ void ASWeapon::Fire()
             DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
         }
         
+        PlayFireEffects(TracerEndPoint);
         
         if (Role == ROLE_Authority)
         {
