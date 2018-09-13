@@ -51,7 +51,6 @@ void ASWeapon::Fire()
     if (Role < ROLE_Authority)
     {
         ServerFire();
-        return;
     }
 
 
