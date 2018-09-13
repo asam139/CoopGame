@@ -44,6 +44,13 @@ void ASWeapon::BeginPlay()
 
 void ASWeapon::Fire()
 {
+    if (Role < ROLE_Authority)
+    {
+        ServerFire();
+        return;
+    }
+
+
     //Trace the world, form pawn eyes to crosshair location
     AActor* MyOwner = GetOwner();
     if (MyOwner)
@@ -141,6 +148,16 @@ void ASWeapon::PlayFireEffects(FVector TraceEnd)
             PC->ClientPlayCameraShake(FireCamShake);
         }
     }
+}
+
+void ASWeapon::ServerFire_Implementation()
+{
+    Fire();
+}
+
+bool ASWeapon::ServerFire_Validate()
+{
+    return true;
 }
 
 void ASWeapon::StartFire()
