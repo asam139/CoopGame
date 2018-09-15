@@ -29,6 +29,5 @@ protected:
 	UDecalComponent* DecalComp;
 
 public:	
-
-		virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 };
