@@ -166,7 +166,9 @@ void ASTrackerBot::Tick(float DeltaTime)
 
 void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	if (!bStartedSelfDestruction)
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (!bStartedSelfDestruction && !bExploted)
 	{
 		ASCharacter* PlayerPawn = Cast<ASCharacter>(OtherActor);
 		if (PlayerPawn)
