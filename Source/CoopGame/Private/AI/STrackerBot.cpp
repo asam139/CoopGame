@@ -103,20 +103,25 @@ void ASTrackerBot::SelfDestruct()
 	bExploted = true;
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
-	
-	TArray<AActor*> IgnoredActors;
-	IgnoredActors.Add(this);
-
-	// Apply damage
-	UGameplayStatics::ApplyRadialDamage(this, ExplosionDamage, GetActorLocation(), ExplosionRadius, 
-									   	nullptr, IgnoredActors, this, GetInstigatorController(), true);
-
-	DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 12, FColor::Red, false, 2.0f, 0, 1.0f);
-
 	UGameplayStatics::PlaySoundAtLocation(this, ExplodeSound, GetActorLocation());
 
-	// Delete Actor inmediately
-	Destroy();
+
+	MeshComp->SetVisibility(false, true);
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (Role == ROLE_Authority)
+	{
+		TArray<AActor*> IgnoredActors;
+		IgnoredActors.Add(this);
+
+		// Apply damage
+		UGameplayStatics::ApplyRadialDamage(this, ExplosionDamage, GetActorLocation(), ExplosionRadius, 
+										   	nullptr, IgnoredActors, this, GetInstigatorController(), true);
+
+		DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 12, FColor::Red, false, 2.0f, 0, 1.0f);
+
+		SetLifeSpan(2.0f);
+	}
 }
 
 void ASTrackerBot::DamageSelf()
@@ -129,7 +134,7 @@ void ASTrackerBot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Role == ROLE_Authority)
+	if (Role == ROLE_Authority && !bExploted)
 	{
 		float DistanceToTarget = (GetActorLocation() - NextPathPoint).Size();
 
@@ -167,9 +172,11 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
 		if (PlayerPawn)
 		{
 			// We overlapped with a player!
-
-			// Start self destruction sequence
-			GetWorldTimerManager().SetTimer(TimerHandle_SelfDamage, this, &ASTrackerBot::DamageSelf, SelfDamageInterval, true, 0.0f);
+			if (Role == ROLE_Authority)
+			{
+				// Start self destruction sequence
+				GetWorldTimerManager().SetTimer(TimerHandle_SelfDamage, this, &ASTrackerBot::DamageSelf, SelfDamageInterval, true, 0.0f);
+			}
 
 			UGameplayStatics::SpawnSoundAttached(SelfDestructSound, RootComponent);	
 
