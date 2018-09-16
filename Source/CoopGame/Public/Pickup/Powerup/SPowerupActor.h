@@ -16,8 +16,6 @@ public:
 	ASPowerupActor();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	/* Times between powerup ticks */
 	UPROPERTY(EditDefaultsOnly, Category = "Powerups")
@@ -34,6 +32,15 @@ protected:
 
 	// Total number of ticks applied
 	int32 TicksProcessed;
+
+	UPROPERTY(ReplicatedUsing = OnRep_PowerupActive)
+	bool bIsPowerupActive;
+
+	UFUNCTION()
+	void OnRep_PowerupActive();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
+	void OnPowerupStateChanged(bool bNewIsActive);
 
 public:	
 
