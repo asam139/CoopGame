@@ -56,7 +56,7 @@ void ASPickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (Role == ROLE_Authority && PowerUpInstance)
 	{
-		PowerUpInstance->ActivatePowerup();
+		PowerUpInstance->ActivatePowerup(OtherActor);
 		PowerUpInstance = nullptr;
 
 		// Set timer to respawn
