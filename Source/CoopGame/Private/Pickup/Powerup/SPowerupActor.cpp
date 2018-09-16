@@ -8,6 +8,7 @@ ASPowerupActor::ASPowerupActor()
 {
 	PowerupInterval = 0.0f;
 	TotalNrOfTicks = 0;
+	TicksProcessed = 0;
 }
 
 // Called when the game starts or when spawned
@@ -25,7 +26,8 @@ void ASPowerupActor::ActivatePowerup()
 
 	if (PowerupInterval > 0.0f)
 	{
-		GetWorldTimerManager().SetTimer(TimerHandle_PowerupTick, this, &ASPowerupActor::OnTickPowerup, PowerupInterval, true, 0.0f);	
+		GetWorldTimerManager().SetTimer(TimerHandle_PowerupTick, this, &ASPowerupActor::OnTickPowerup, 
+			PowerupInterval, true);	
 	}
 	else 
 	{
