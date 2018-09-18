@@ -15,7 +15,10 @@ class COOPGAME_API ASGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 protected:
+
 	FTimerHandle TimerHandle_BotSpawner;
+
+	FTimerHandle TimerHandle_NextWaveStart;
 
 	// Bots to spawn in current wave
 	int32 NrOfBotsToSpawn;
@@ -42,11 +45,15 @@ protected:
 	// Set timer for next start wave
 	void PrepareForNextWave();
 
+	void CheckWaveState();
+
 
 public:
 
 	ASGameMode();
 
 	virtual void StartPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
 	
 };
