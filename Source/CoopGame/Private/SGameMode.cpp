@@ -1,17 +1,28 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SGameMode.h"
+#include "SGameState.h"
 #include "SHealthComponent.h"
 #include "TimerManager.h"
 
 
-
 ASGameMode::ASGameMode()
 {
+	GameStateClass = ASGameState::StaticClass();
+
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 1.0f;
 
 	TimeBetweenWaves = 2.0f;
+}
+
+void ASGameMode::SetWaveState(EWaveState NewState)
+{
+	ASGameState* GS = GetGameState<ASGameState>();
+	if (ensureAlways(GS))
+	{
+		GS->WaveState = NewState;
+	}
 }
 
 void ASGameMode::StartPlay()
