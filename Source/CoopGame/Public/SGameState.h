@@ -10,18 +10,16 @@
 UENUM(BlueprintType)
 enum class EWaveState : uint8
 {
-	WaitingToStart,
+	WaitingToStart UMETA(DisplayName = "Waiting To Start"),
 
-	PreparingNextWave,
-
-	WaveInProgress,
+	WaveInProgress UMETA(DisplayName = "Wave In Progress"),
 
 	//No longer spawing new bots, waiting for players to kill remaining bots
-	WaitingToComplete,
+	WaitingToComplete UMETA(DisplayName = "Waiting To Complete"),
 
-	WaveComplete,
+	WaveComplete UMETA(DisplayName = "Wave Complete"),
 
-	GameOver
+	GameOver UMETA(DisplayName = "Game Over")
 };
 
 /**
@@ -40,11 +38,12 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameState")
 	void WaveStateChanged(EWaveState NewState, EWaveState OldState);
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_WaveState, Category = "GameState")
+	EWaveState WaveState;
 
 public:
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_WaveState, Category = "GameState")
-	EWaveState WaveState;
+	void SetWaveState(EWaveState NewState);
 
 
 	
