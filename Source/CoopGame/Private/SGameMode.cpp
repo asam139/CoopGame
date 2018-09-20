@@ -69,6 +69,8 @@ void ASGameMode::PrepareForNextWave()
 	GetWorldTimerManager().SetTimer(TimerHandle_NextWaveStart, this, &ASGameMode::StartWave, 1.0f, false, 0.0f);
 
 	SetWaveState(EWaveState::WaitingToStart);
+
+	RestartDeadPlayers();
 }
 
 
@@ -139,6 +141,19 @@ void ASGameMode::CheckAnyPlayerAlive()
 
 	// No player alive
 	GameOver();
+}
+
+void ASGameMode::RestartDeadPlayers() 
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* PC = It->Get();
+		if (PC && PC->GetPawn() == nullptr)
+		{
+			RestartPlayer(PC);
+		}
+
+	}
 }
 
 
