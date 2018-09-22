@@ -93,7 +93,7 @@ void ASWeapon::Fire()
                 CurrentDamage *= 2.0f;
             }
             AActor* HitActor = Hit.GetActor();
-            UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
+            UGameplayStatics::ApplyPointDamage(HitActor, CurrentDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), MyOwner, DamageType);
             
             PlayImpactEffects(SurfaceType, Hit.ImpactPoint);
             
