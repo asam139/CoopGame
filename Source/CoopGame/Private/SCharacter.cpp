@@ -171,7 +171,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
     PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ASCharacter::BeginCrouch);
     PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ASCharacter::EndCrouch);
     
-    PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::Jump);
+    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
     
     PlayerInputComponent->BindAction("Zoom", IE_Pressed, this, &ASCharacter::BeginZoom);
     PlayerInputComponent->BindAction("Zoom", IE_Released, this, &ASCharacter::EndZoom);
